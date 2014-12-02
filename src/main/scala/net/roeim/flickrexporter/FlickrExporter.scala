@@ -66,7 +66,6 @@ class FlickrExporter(config: Config) {
    * @param url
    */
   def downloadFile(directory: String, url: String) {
-    println(s"downloading ${url}")
     val in = GET(new URL(url)).getInputStream
     val out = new BufferedOutputStream(
       new FileOutputStream(directory + File.separator + url.substring(url.lastIndexOf("/") + 1)))
@@ -86,6 +85,7 @@ class FlickrExporter(config: Config) {
    */
   def downloadPhotoset {
     val photoset = setsInterface.getInfo(config.id)
+    println(s"Downloading photoset ${photoset.getId} ${photoset.getTitle}")
     val photos = setsInterface.getPhotos(config.id, 500, 1)
 
     val directory = new File(photoset.getTitle)
@@ -94,6 +94,8 @@ class FlickrExporter(config: Config) {
     photos.foreach(photo => {
       downloadFile(directory.getName, photo.getOriginalUrl)
     })
+
+    println("Done!")
   }
 
   /**
@@ -104,7 +106,7 @@ class FlickrExporter(config: Config) {
   }
 
   def printPhotosetInfo(photoset: Photoset) {
-    println(s"ID: ${photoset.getId} Title: ${photoset.getTitle}")
+    println(s"${photoset.getId} ${photoset.getTitle}")
   }
 
   val flickr = new Flickr(config.apiKey, config.sharedSecret, new REST());
