@@ -91,11 +91,14 @@ class FlickrExporter(config: Config) {
     val directory = new File(photoset.getTitle)
     directory.mkdir()
 
-    photos.foreach(photo => {
-      downloadFile(directory.getName, photo.getOriginalUrl)
-    })
-
-    println("Done!")
+    print(s"0 of ${photoset.getPhotoCount}\r")
+    photos.zipWithIndex.foreach {
+      case (photo, idx) => {
+        print(s"$idx of ${photoset.getPhotoCount}\r")
+        downloadFile(directory.getName, photo.getOriginalUrl)
+      }
+    }
+    print("done             \n")
   }
 
   /**
